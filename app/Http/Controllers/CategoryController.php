@@ -11,7 +11,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories = auth()->user()->categories;
+
+        return view('categories.index', compact('categories'));
     }
 
     /**
@@ -27,7 +29,15 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+
+        ]);
+        auth()->user() - categories()->create([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->route('categories.index')->with('success', 'Catégorie ajoutée avec succès!');
     }
 
     /**
