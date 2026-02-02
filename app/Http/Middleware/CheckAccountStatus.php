@@ -4,7 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+
 class CheckAccountStatus
 {
     /**
@@ -14,16 +16,14 @@ class CheckAccountStatus
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && ! auth()->user()->is_active) {
-            auth()->logout();
+        if (Auth::check() && ! Auth::user()->is_active) {
+            Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
             return redirect()->route('login')->withErrors([
-
                 'email' => 'votre compte est désactivé ',
             ]);
-
         }
 
         return $next($request);
