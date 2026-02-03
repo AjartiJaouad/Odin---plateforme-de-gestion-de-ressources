@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -11,7 +13,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = auth()->user()->categories;
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $categories = $user->categories;
 
         return view('categories.index', compact('categories'));
     }
@@ -29,15 +33,7 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-
-        ]);
-        auth()->user() - categories()->create([
-            'name' => $request->name,
-        ]);
-
-        return redirect()->route('categories.index')->with('success', 'Catégorie ajoutée avec succès!');
+        //
     }
 
     /**
