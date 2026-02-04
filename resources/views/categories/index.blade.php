@@ -19,6 +19,12 @@
                     <div class="flex justify-between border-b py-2">
                         <span>{{ $category->name }}</span>
                     </div>
+                    <form action="{{ route('categories.destroy', $category) }}" method="POST"
+                        onsubmit="return confirm('Sûr ?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-red-500 hover:underline">Supprimer</button>
+                    </form>
                 @endforeach
             </div>
         </div>
