@@ -25,6 +25,20 @@
                         @method('DELETE')
                         <button type="submit" class="text-red-500 hover:underline">Supprimer</button>
                     </form>
+                    <form action="{{ route('tasks.store', $category) }}" method="POST" class="mt-2 flex gap-2">
+                        @csrf
+                        <input type="text" name="title" placeholder="Nouvelle tâche..."
+                            class="border-gray-300 rounded-md text-sm" required>
+                        <button type="submit" class="bg-green-500 text-white px-3 py-1 rounded-md text-sm">
+                            +
+                        </button>
+                    </form>
+
+                    <ul class="mt-2 ml-4 list-disc">
+                        @foreach ($category->tasks as $task)
+                            <li class="text-gray-600 text-sm">{{ $task->title }}</li>
+                        @endforeach
+                    </ul>
                 @endforeach
             </div>
         </div>
