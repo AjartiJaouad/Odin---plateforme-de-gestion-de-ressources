@@ -17,4 +17,10 @@ class TaskController extends Controller
         ]);
         return back()->with('success','tacche ajouter !');
     }
+    public function update(Task $task){
+        $task->update([
+            'status'=> $task->status === 'done' ? 'todo' : 'done'
+        ]);
+        return back();
+    }
 }

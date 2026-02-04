@@ -36,7 +36,19 @@
 
                     <ul class="mt-2 ml-4 list-disc">
                         @foreach ($category->tasks as $task)
-                            <li class="text-gray-600 text-sm">{{ $task->title }}</li>
+                            <li class="flex items-center gap-2 mb-1">
+                                <form action="{{ route('tasks.update', $task) }}" method="POST">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="checkbox" onChange="this.form.submit()"
+                                        {{ $task->status === 'done' ? 'checked' : '' }} class="rounded text-blue-500">
+                                </form>
+
+                                <span
+                                    class="{{ $task->status === 'done' ? 'line-through text-gray-400' : 'text-gray-700' }}">
+                                    {{ $task->title }}
+                                </span>
+                            </li>
                         @endforeach
                     </ul>
                 @endforeach
