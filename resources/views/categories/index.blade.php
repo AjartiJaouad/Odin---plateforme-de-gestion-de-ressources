@@ -43,11 +43,18 @@
                                     <input type="checkbox" onChange="this.form.submit()"
                                         {{ $task->status === 'done' ? 'checked' : '' }} class="rounded text-blue-500">
                                 </form>
-
-                                <span
+                                 <span
                                     class="{{ $task->status === 'done' ? 'line-through text-gray-400' : 'text-gray-700' }}">
                                     {{ $task->title }}
                                 </span>
+                                <form action="{{ route('tasks.destroy', $task) }}" method="POST"
+                                    onsubmit="return confirm('Supprimer ?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-500 hover:text-red-700 text-xs">🗑️</button>
+                                </form>
+
+
                             </li>
                         @endforeach
                     </ul>

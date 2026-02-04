@@ -25,4 +25,8 @@ class TaskController extends Controller
         ]);
         return back();
     }
+    public function destroy(Task $task){
+     $task->delete();
+     return back()->with('success ','tache supprimeé !');
+    }
 }
