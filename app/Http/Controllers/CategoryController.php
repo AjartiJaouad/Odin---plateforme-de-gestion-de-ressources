@@ -15,7 +15,8 @@ class CategoryController extends Controller
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        $categories = $user->categories;
+        $categories = $user->categories()->with(['tasks' => function ($query) {
+            $query->orderBy('status', 'asc');}])->get();
 
         return view('categories.index', compact('categories'));
     }
