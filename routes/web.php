@@ -21,6 +21,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/categories/{category}/tasks', [TaskController::class, 'store'])->name('tasks.store');
     Route::patch('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
     Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+    Route::delete('/tasks/{task}/title', [TaskController::class, 'updateTitle'])->name('tasks.updateTitle');
 });
 
 require __DIR__.'/auth.php';

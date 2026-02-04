@@ -29,4 +29,14 @@ class TaskController extends Controller
      $task->delete();
      return back()->with('success ','tache supprimeé !');
     }
+    public function updateTitle(Request $request ,Task $task){
+        $request->validate([
+            'title'=>'required|string|max:255',
+        ]);
+
+        $task->update([
+
+        'title'=>$request->title]);
+        return back()->with('success','tache modfiée !');
+    }
 }
