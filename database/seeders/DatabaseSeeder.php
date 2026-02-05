@@ -15,7 +15,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        \App\Models\Tag::create(['name' => 'Urgent']);
+        \App\Models\Tag::create(['name' => 'Work']);
+        \App\Models\Tag::create(['name' => 'Personal']);
+        \App\Models\Tag::create(['name' => 'Important']);
 
         User::factory()->create([
             'name' => 'Test User',
