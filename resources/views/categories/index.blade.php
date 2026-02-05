@@ -5,6 +5,29 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
+            @if (session('success'))
+                <div class="mb-6 p-4 bg-green-500 text-white rounded-lg shadow-lg animate-fade-in-down">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            <div class="bg-white p-4 rounded-lg shadow-sm mb-6 flex gap-4 items-center">
+                <form action="{{ route('categories.index') }}" method="GET" class="flex w-full gap-2">
+                    <input type="text" name="search" value="{{ request('search') }}"
+                        placeholder="🔍 Rechercher une catégorie..."
+                        class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500">
+                    <button type="submit"
+                        class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition">
+                        Filtrer
+                    </button>
+                    @if (request('search'))
+                        <a href="{{ route('categories.index') }}"
+                            class="text-red-500 flex items-center text-sm px-2">Annuler</a>
+                    @endif
+                </form>
+            </div>
+
             <div class="bg-white p-6 rounded-lg shadow-sm mb-6 border-l-4 border-blue-500">
                 <form action="{{ route('categories.store') }}" method="POST" class="flex gap-4">
                     @csrf
@@ -34,48 +57,70 @@
                             </form>
                         </div>
 
-                        <form action="{{ route('tasks.store', $category) }}" method="POST" class="mb-4 flex gap-2">
+                        <form action="{{ route('tasks.store', $category) }}" method="POST" class="mb-4">
                             @csrf
-                            <input type="text" name="title" placeholder="Nouvelle tâche..."
-                                class="border-gray-300 rounded-md text-sm w-full" required>
-                            <button type="submit"
-                                class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md text-sm transition">+</button>
+                            <div class="flex gap-2 mb-2">
+                                <input type="text" name="title" placeholder="Nouvelle tâche..."
+                                    class="border-gray-300 rounded-md text-sm w-full focus:ring-blue-500 focus:border-blue-500"
+                                    required>
+                                <button type="submit"
+                                    class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md text-sm transition font-bold">
+                                    +
+                                </button>
+                            </div>
+
+                            <div class="flex flex-wrap gap-2">
+                                @foreach ($tags as $tag)
+                                    <label class="cursor-pointer">
+                                        <input type="checkbox" name="tags[]" value="{{ $tag->id }}"
+                                            class="hidden peer">
+                                        <span
+                                            class="text-[10px] px-2 py-1 rounded-full border border-gray-200 text-gray-500 peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 transition-all hover:bg-gray-100">
+                                            #{{ $tag->name }}
+                                        </span>
+                                    </label>
+                                @endforeach
+                            </div>
                         </form>
 
                         <ul class="space-y-3">
                             @foreach ($category->tasks as $task)
-                                <li
-                                    class="flex items-center justify-between group bg-gray-50 p-2 rounded-md hover:bg-gray-100 transition">
-                                    <div class="flex items-center gap-2 flex-grow">
-                                        <form action="{{ route('tasks.update', $task) }}" method="POST">
-                                            @csrf
-                                            @method('PATCH')
-                                            <input type="checkbox" onChange="this.form.submit()"
-                                                {{ $task->status === 'done' ? 'checked' : '' }}
-                                                class="rounded text-blue-500 cursor-pointer">
-                                        </form>
-
-                                        <div class="flex-grow">
-                                            <form action="{{ route('tasks.updateTitle', $task) }}" method="POST"
-                                                class="flex items-center">
+                                <li class="flex flex-col group bg-gray-50 p-2 rounded-md hover:bg-gray-100 transition">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-2 flex-grow">
+                                            <form action="{{ route('tasks.update', $task) }}" method="POST">
                                                 @csrf
-                                                @method('PUT')
-                                                <input type="text" name="title" value="{{ $task->title }}"
-                                                    onblur="if(this.value != '{{ $task->title }}') this.form.submit()"
-                                                    class="w-full bg-transparent border-none focus:ring-0 p-0 text-sm {{ $task->status === 'done' ? 'line-through text-gray-400' : 'text-gray-700' }}">
+                                                @method('PATCH')
+                                                <input type="checkbox" onChange="this.form.submit()"
+                                                    {{ $task->status === 'done' ? 'checked' : '' }}
+                                                    class="rounded text-blue-500 cursor-pointer">
                                             </form>
+                                            <div class="flex-grow">
+                                                <form action="{{ route('tasks.updateTitle', $task) }}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <input type="text" name="title" value="{{ $task->title }}"
+                                                        onblur="if(this.value != '{{ $task->title }}') this.form.submit()"
+                                                        class="w-full bg-transparent border-none focus:ring-0 p-0 text-sm {{ $task->status === 'done' ? 'line-through text-gray-400' : 'text-gray-700' }}">
+                                                </form>
+                                            </div>
                                         </div>
+                                        <form action="{{ route('tasks.destroy', $task) }}" method="POST"
+                                            onsubmit="return confirm('Supprimer ?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100">🗑️</button>
+                                        </form>
                                     </div>
-
-                                    <form action="{{ route('tasks.destroy', $task) }}" method="POST"
-                                        onsubmit="return confirm('Supprimer ?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            class="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">
-                                            🗑️
-                                        </button>
-                                    </form>
+                                    <div class="flex flex-wrap gap-1 mt-1 ml-6">
+                                        @foreach ($task->tags as $tag)
+                                            <span
+                                                class="text-[9px] bg-blue-50 text-blue-500 border border-blue-200 px-1.5 py-0.5 rounded-md font-bold uppercase tracking-wider">
+                                                {{ $tag->name }}
+                                            </span>
+                                        @endforeach
+                                    </div>
                                 </li>
                             @endforeach
                         </ul>
@@ -85,16 +130,3 @@
         </div>
     </div>
 </x-app-layout>
-<script>
-    function toggleEdit(taskId) {
-        document.getElementById('task-text-' + taskId).classList.toggle('hidden');
-        document.getElementById('edit-form-' + taskId).classList.toggle('hidden');
-
-        let btn = document.getElementById('edit-btn-' + taskId);
-        btn.innerText = btn.innerText === '✏️' ? '✅' : '✏️';
-
-        if (btn.innerText === '✏️') {
-            document.getElementById('edit-form-' + taskId).submit();
-        }
-    }
-</script>

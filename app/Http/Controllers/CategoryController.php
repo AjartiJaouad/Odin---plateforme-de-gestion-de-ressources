@@ -11,14 +11,21 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        $categories = $user->categories()->with(['tasks' => function ($query) {
-            $query->orderBy('status', 'asc');}])->get();
 
-        return view('categories.index', compact('categories'));
+        $query = $user->categories();
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%'.$request->search.'%');
+        }
+
+        $categories = $query->with(['tasks.tags'])->get();
+        $tags = \App\Models\Tag::all();
+
+        return view('categories.index', compact('categories', 'tags'));
     }
 
     /**
