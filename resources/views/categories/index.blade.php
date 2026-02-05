@@ -91,9 +91,19 @@
                                             <form action="{{ route('tasks.update', $task) }}" method="POST">
                                                 @csrf
                                                 @method('PATCH')
-                                                <input type="checkbox" onChange="this.form.submit()"
-                                                    {{ $task->status === 'done' ? 'checked' : '' }}
-                                                    class="rounded text-blue-500 cursor-pointer">
+                                                <div class="flex flex-col gap-2 mb-2">
+                                                    <input type="text" name="title" placeholder="Titre du lien..."
+                                                        class="border-gray-300 rounded-md text-sm w-full focus:ring-blue-500 focus:border-blue-500"
+                                                        required>
+                                                    <input type="url" name="url"
+                                                        placeholder="https://example.com"
+                                                        class="border-gray-300 rounded-md text-sm w-full focus:ring-blue-500 focus:border-blue-500"
+                                                        required>
+                                                    <button type="submit"
+                                                        class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-md text-sm transition font-bold">
+                                                        Ajouter le Lien
+                                                    </button>
+                                                </div>
                                             </form>
                                             <div class="flex-grow">
                                                 <form action="{{ route('tasks.updateTitle', $task) }}" method="POST">
@@ -103,6 +113,12 @@
                                                         onblur="if(this.value != '{{ $task->title }}') this.form.submit()"
                                                         class="w-full bg-transparent border-none focus:ring-0 p-0 text-sm {{ $task->status === 'done' ? 'line-through text-gray-400' : 'text-gray-700' }}">
                                                 </form>
+                                                @if ($task->url)
+                                                    <a href="{{ $task->url }}" target="_blank"
+                                                        class="text-[11px] text-blue-400 hover:text-blue-600 hover:underline block mt-0.5 opacity-80 transition">
+                                                        🔗 {{ Str::limit($task->url, 40) }}
+                                                    </a>
+                                                @endif
                                             </div>
                                         </div>
                                         <form action="{{ route('tasks.destroy', $task) }}" method="POST"
