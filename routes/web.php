@@ -4,6 +4,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\VerifyOtpController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,6 +23,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
     Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
     Route::delete('/tasks/{task}/title', [TaskController::class, 'updateTitle'])->name('tasks.updateTitle');
+    Route::get('/verify-otp', [VerifyOtpController::class, 'show'])->name('otp.verify');
+    Route::post('/verify-otp', [VerifyOtpController::class, 'verify']);
 });
 
 require __DIR__.'/auth.php';

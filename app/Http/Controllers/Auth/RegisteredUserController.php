@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use App\Notifications\SendOTPNotification;
 
 class RegisteredUserController extends Controller
 {
@@ -39,12 +40,13 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'otp_code' => rand(100000, 999999),
+            'is_active' => false,
         ]);
-
+        $user->notify(new SendOTPNotification($user));
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
-    }
+return redirect()->route('otp.verify')->with('success', 'Veuillez entrer le code envoyé par mail.');    }
 }
